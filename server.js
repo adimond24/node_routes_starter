@@ -26,7 +26,7 @@ mongodb.initDb((err) =>{
     app.listen(PORT);
     console.log(
       "\x1b[34m%s\x1b[0m",
-      `Connected to DB and listening on ${PORT}`
+      `Connected to DB and listening on ${PORT}` 
     );
   }
 });
