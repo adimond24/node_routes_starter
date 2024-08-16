@@ -5,7 +5,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
  
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app
   .use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
@@ -15,7 +15,7 @@ app
     res.setHeader("Access-Control-Allow-Origin", "*");
     next();
   })
-  .use("/", requires("./routes"));
+  .use("/", require("./routes"));
 
 // app.use(cors()).use("/", require("./routes"));
 
