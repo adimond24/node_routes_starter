@@ -41,65 +41,123 @@ const getSingleStudent = async (req, res)=>{
 };
 
 //CREATE contact
-const createStudent = async (req, res)=>{
+// const createStudent = async (req, res)=>{
+//   try {
+//     const student = {
+//       firstName: req.body.firstName,
+//       lastName: req.body.lastName,
+//       email: req.body.email,
+//       age: req.body.age,
+//       currentCollege: req.body.currentCollege,
+//     };
+
+//     console.log(student);
+    
+//     const response = await mongodb
+//       .getDb()
+//       .db()
+//       .collection("students")
+//       .insertOnce(student);
+//       if (response.acknowledged) {
+//         res.status(201).json(response);
+//       } else {
+//         res 
+//           .status(500)
+//           .json(
+//             response.error|| "Some error occurred while creating the student."
+//           );
+//       }
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+
+// }
+const createStudent = async (req, res) => {
   try {
-    const student = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      age: req.body.age,
-      currentCollege: req.body.currentCollege,
-    };
-    const response = await mongodb
-      .getDb()
-      .db()
-      .collection("students")
-      .insertOnce(student);
+      const student = {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          email: req.body.email,
+          age: req.body.age,
+          currentCollege: req.body.currentCollege
+      };
+
+      const response = await mongodb.getDb().db().collection("students").insertOne(student);
       if (response.acknowledged) {
-        res.status(201).json(response);
+          res.status(201).json(response);
       } else {
-        res 
-          .status(500)
-          .json(
-            response.error|| "Some error occurred while creating the student."
-          );
+          res.status(500).json(response.error || "Some error occurred when created this student");
       }
   } catch (error) {
-    res.status(500).json(error);
+      res.status(500).json(error);
   }
 
 }
-
 // update one student
-const updateStudent = async(req, res) => {
-  try {
-    const userId = newObjectId(req.params.id);
-    const student = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      age: req.body.age,
-      currentCollege: req.body.currentCollege,
-    };
+// const updateStudent = async(req, res) => {
+//   try {
+//     const userId = newObjectId(req.params.id);
+//     const student = {
+//       firstName: req.body.firstName,
+//       lastName: req.body.lastName,
+//       email: req.body.email,
+//       age: req.body.age,
+//       currentCollege: req.body.currentCollege,
+//     };
 
-    const response = await mongodb
-      .getDb()
-      .db()
-      .collection("students")
-      .replaceOne({_id: userId}, student);
-    if(response.acknowledged){
-      res.status(204).json(response);
-    }else{
-      res
-        .status(500)
-        .json(
-          response.error || "Some error occurred while updating the student."
-        );
-    }
+//     console.log(JSON.stringify(student));
+    
+
+//     const response = await mongodb
+//       .getDb()
+//       .db()
+//       .collection("students")
+//       .replaceOne({_id: userId}, student);
+//     if(response.acknowledged){
+//       res.status(204).json(response);
+//     }else{
+//       res
+//         .status(500)
+//         .json(
+//           response.error || "Some error occurred while updating the student."
+//         );
+//     }
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+// };
+const updateStudent = async (req, res) => {
+  try {
+      const userId = new ObjectId(req.params.id);
+      let student = await mongodb.getDb().db().collection("students").findOne({_id: userId});
+
+      if (req.body.firstName !== undefined) {
+          student.firstName = req.body.firstName;
+      }
+      if (req.body.lastName !== undefined) {
+          student.lastName = req.body.lastName;
+      }
+      if (req.body.email !== undefined) {
+          student.email = req.body.email;
+      }
+      if (req.body.age !== undefined) {
+          student.age = req.body.age;
+      }
+      if (req.body.currentCollege !== undefined) {
+          student.currentCollege = req.body.currentCollege;
+      }
+
+      const response = await mongodb.getDb().db().collection("students").replaceOne({_id: userId}, student);
+      if (response.acknowledged) {
+          res.status(204).json(response);
+      } else {
+          res.status(500).json(response.error);
+      }
+
   } catch (error) {
-    res.status(500).json(error);
+      res.status(500).json(error)
   }
-};
+}
 
 //delete student
 const deleteStudent = async (req, res)=>{
@@ -125,4 +183,4 @@ const deleteStudent = async (req, res)=>{
   }
 };
 
-module.exports = { awesomeFunction, tooeleTechFunction, getAllStudents };
+module.exports = { awesomeFunction, tooeleTechFunction, getAllStudents, updateStudent, createStudent, getSingleStudent, deleteStudent };
